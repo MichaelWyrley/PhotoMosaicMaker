@@ -12,6 +12,7 @@ DELAY = 2
 PATH = "../images/"
 NO_IMAGES = 20
 IMAGE_TEXT = "dog"
+IMAGE_DIMENSIONS = (400,400)
 
 
 # Scroll to the bottom of a webpage
@@ -63,7 +64,7 @@ def fetch_image_urls(query, number_of_images, wd, delay):
     
     return image_urls
                     
-def download_image(path, urls):
+def download_image(path, urls, image_dimensions):
 
     for i, url in enumerate(urls):
         try:
@@ -71,6 +72,7 @@ def download_image(path, urls):
             image_content = requests.get(url).content
             image_file = io.BytesIO(image_content)
             image = Image.open(image_file)
+            image = image.resize(image_dimensions)
 
             # Save the image
             file_path = path  + str(i).rjust(3,"0") + ".jpg"
@@ -85,7 +87,7 @@ def download_image(path, urls):
 
 
 
-def scrape_images(query=IMAGE_TEXT, no_images=NO_IMAGES, download_path=PATH):
+def scrape_images(query=IMAGE_TEXT, no_images=NO_IMAGES, download_path=PATH, image_dimensions=IMAGE_DIMENSIONS):
     wd = webdriver.Chrome(executable_path=DRIVER_PATH)
     wd.get('https://google.com')
 
@@ -94,7 +96,7 @@ def scrape_images(query=IMAGE_TEXT, no_images=NO_IMAGES, download_path=PATH):
     wd.find_element(By.ID, value='L2AGLb').click()
 
     urls = fetch_image_urls(query, no_images, wd, DELAY)
-    download_image(download_path, urls)
+    download_image(download_path, urls, image_dimensions)
 
     wd.quit()
 
@@ -102,6 +104,7 @@ args = sys.argv[1:]
 query = args[0]
 no_images = int(args[1])
 path = args[2]
+image_dimensions = tuple(map(int, args[3].split('x')))
 print(args)
 
-scrape_images(query, no_images, path)
+scrape_images(query, no_images, path, image_dimensions)

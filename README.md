@@ -13,16 +13,16 @@ This application takes an image, a search and a number of smaller images. It wil
 
 I mostly referenced this blog post for getting images from google chrome [Blog Post](https://towardsdatascience.com/image-scraping-with-python-a96feda8af2d)
 
-The image scraper takes in the query, number of images wanted and the location they are going to be stored.
+The image scraper takes in the query, number of images wanted, the location they are going to be stored and the final dimensions.
 I am using an anoconda environment so you can use
 `conda activate photoMoseic` 
 in order to install all dependencys
 
 When you want to use the script please use this form
-`python ./ImageScraper.py <QUERY> <NO IMAGES> <PATH>`
+`python ./ImageScraper.py <QUERY> <NO IMAGES> <PATH> <WIDTHxHEIGHT>`
 
 e.g.
-`python ./ImageScraper.py cat 5 ./images/`
+`python ./ImageScraper.py 'cat' 5 './images/' '100x100'`
 
 ### Trouble Shooting
 

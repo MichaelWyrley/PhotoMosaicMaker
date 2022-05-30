@@ -1,0 +1,11 @@
+name: photoMoseic
+channels:
+- defaults
+dependencies:
+- python=3.8.*
+- pip==21.0.*
+- pillow==8.2.*
+- pytest==6.2.*
+- selenium==3.*
+- pip:
+  - requests==2.*

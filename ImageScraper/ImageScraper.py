@@ -1,19 +1,18 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from PIL import Image
+import sys
 import time
 import requests
 import io
 
 # Where the Chrome Driver is stored
 DRIVER_PATH = './chromedriver.exe'
+DELAY = 2
+PATH = "../images/"
+NO_IMAGES = 20
+IMAGE_TEXT = "dog"
 
-wd = webdriver.Chrome(executable_path=DRIVER_PATH)
-wd.get('https://google.com')
-
-
-# Get rid of the popup window when using chrome
-wd.find_element(By.ID, value='L2AGLb').click()
 
 # Scroll to the bottom of a webpage
 def scroll_to_end(wd, delay):
@@ -68,21 +67,41 @@ def download_image(path, urls):
 
     for i, url in enumerate(urls):
         try:
+            # Open the image
             image_content = requests.get(url).content
             image_file = io.BytesIO(image_content)
             image = Image.open(image_file)
-            file_path = path  + str(i).rjust(3,"0") + ".jpg"
 
+            # Save the image
+            file_path = path  + str(i).rjust(3,"0") + ".jpg"
             with open(file_path, "wb") as f:
                 image.save(f, "JPEG")
 
-            print("Success")
+            print("Saved image ", file_path)
 
         except Exception as e:
             print(f"ERROR - Could not save {url} - {e}")
 
 
-urls = fetch_image_urls("dog", 5, wd, 2)
-download_image("../image/", urls)
 
-wd.quit()
+
+def scrape_images(query=IMAGE_TEXT, no_images=NO_IMAGES, download_path=PATH):
+    wd = webdriver.Chrome(executable_path=DRIVER_PATH)
+    wd.get('https://google.com')
+
+
+    # Get rid of the popup window when using chrome
+    wd.find_element(By.ID, value='L2AGLb').click()
+
+    urls = fetch_image_urls(query, no_images, wd, DELAY)
+    download_image(download_path, urls)
+
+    wd.quit()
+
+args = sys.argv[1:]
+query = args[0]
+no_images = int(args[1])
+path = args[2]
+print(args)
+
+scrape_images(query, no_images, path)

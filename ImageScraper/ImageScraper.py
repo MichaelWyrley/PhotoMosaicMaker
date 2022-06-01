@@ -75,7 +75,7 @@ def download_image(path, urls, image_dimensions):
             image = image.resize(image_dimensions)
 
             # Save the image
-            file_path = path  + str(i).rjust(3,"0") + ".jpg"
+            file_path = path  + str(i) + ".jpg"
             with open(file_path, "wb") as f:
                 image.save(f, "JPEG")
 
@@ -105,6 +105,5 @@ query = args[0]
 no_images = int(args[1])
 path = args[2]
 image_dimensions = tuple(map(int, args[3].split('x')))
-print(args)
 
 scrape_images(query, no_images, path, image_dimensions)

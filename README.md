@@ -32,4 +32,4 @@ Check that your chrome version and the chrome driver version match, if they don'
 
 # Disclaimer
 
-This program takes images from Google. These images may or may not have copyright associated with them. Do not use these images in a way that would entrench on the original image holders copyright
+This program takes images from Google. These images may or may not have copyright associated with them. Do not use these images in a way that would infringe on the original image holders copyright

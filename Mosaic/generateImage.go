@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/jpeg"
 	"os"
+	"github.com/nfnt/resize"
 )
 
 func squareDifference(r1, r2, g1, g2, b1, b2 uint64) uint64 {
@@ -65,20 +66,51 @@ func calculateImage(img image.Image, images []AverageImage) [][]int {
 	return indexes
 }
 
-func createImage(indexes [][]int, images []AverageImage) {
-
+func setImage(img *image.RGBA, place image.Image, dim dimensions, y, x int){
+	for i := 0; i < place.Bounds().Max.Y; i++ {
+		for j := 0; j < place.Bounds().Max.X; j++ {
+			img.Set(x*dim.scaleX + j, y*dim.scaleY + i, place.At(j, i))
+		}
+	}
 }
 
-func generateImages(img string, images []AverageImage) {
+func createImage(indexes [][]int, images []AverageImage, dim dimensions, location string) {
+	upLeft := image.Point{0, 0}
+	lowRight := image.Point{dim.width, dim.height}
+
+	img := image.NewRGBA(image.Rectangle{upLeft, lowRight})
+
+	for i := 0; i < len(indexes); i++ {
+		for j:= 0; j < len(indexes[0]); j++ {
+			setImage(img, images[indexes[i][j]].image, dim, i, j)
+		}
+	}
+
+	f, _ := os.Create(location + ".jpg")
+	err := jpeg.Encode(f, img, &jpeg.Options{50})
+	if err != nil {
+		return
+	}
+}
+
+func generateImages(img string, images []AverageImage, scaleX, scaleY int, imageShrink int, location string) {
 	// read in the image
 	file, err := os.Open(img)
-	handleError(err)
+	handleError(err, "Opening image")
 
 	imData, err := jpeg.Decode(file)
-	handleError(err)
+	handleError(err, "decoding image")
+	err = file.Close()
+	handleError(err, "closing file")
+
+	imData = resize.Resize(uint(imData.Bounds().Max.X/imageShrink), uint(imData.Bounds().Max.Y/imageShrink), imData, resize.Lanczos3)
 
 	indexs := calculateImage(imData, images)
+	width := imData.Bounds().Max.X * scaleX
+	height := imData.Bounds().Max.Y * scaleY
 
-	createImage(indexs, images)
+	dim := dimensions{scaleX: scaleX, scaleY: scaleY, width: width, height: height}
+
+	createImage(indexs, images, dim, location)
 
 }

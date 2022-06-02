@@ -24,7 +24,20 @@ When you want to use the script please use this form
 e.g.
 `python ./ImageScraper.py 'cat' 5 './images/' '100x100'`
 
-### Trouble Shooting
+## Mosaic generateor
+
+The mosaic generator takes the image to be converted, the number of sample images you want to use, the scale of the sample images, the amount you want to shrink the image given and the final location of the image.
+It uses go with a specific library installed for resizing the image ([library](https://github.com/nfnt/resize))
+use `go get github.com/nfnt/resize` if you don't have it installed
+
+To run the program use this format
+`go run . -img <IMAGE> -no <NO SAMPLE IMAGES> -scale <SCALE OF SAMPLE IMAGES> -shrink <AMOUNT YOU WANT TO DECREASE BY> -location <LOCATION OF FINAL IMAGE>`
+
+e.g.
+`go run . -img '../cat1.jpeg' -no '10'-scale "25x25" -shrink 10 -location "../image"`
+
+
+## Trouble Shooting
 
 Check that your chrome version and the chrome driver version match, if they don't then download the one that matches your chrome version from [here](https://chromedriver.chromium.org/downloads)
 

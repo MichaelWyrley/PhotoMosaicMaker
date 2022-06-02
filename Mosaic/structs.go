@@ -16,10 +16,17 @@ type AverageImage struct {
 	average ColourSum
 }
 
+type dimensions struct {
+	scaleX int
+	scaleY int
+	width int
+	height int
+}
+
 const NO_SLICES = 10
 
-func handleError(err error) {
+func handleError(err error, info string) {
 	if err != nil {
-		log.Fatal("An error occurred ", err)
+		log.Fatal("An error occurred ", info, " error: ", err)
 	}
 }

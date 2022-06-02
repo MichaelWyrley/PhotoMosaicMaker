@@ -67,10 +67,13 @@ func returnAverage(no_images int) []AverageImage {
 	// Create go routines that calculate the average colour value of each image
 	for i := 0; i < no_images; i++ {
 		file, err := os.Open("../images/" + strconv.Itoa(i) + ".jpg")
-		handleError(err)
+		handleError(err, "reading image from file")
 
 		imData, err := jpeg.Decode(file)
-		handleError(err)
+		handleError(err, "decoding image")
+		err = file.Close()
+		handleError(err, "closing file")
+
 		r := make(chan AverageImage)
 		go getAverageValues(imData, r)
 		averageReturns[i] = r

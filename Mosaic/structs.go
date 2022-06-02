@@ -24,6 +24,7 @@ type dimensions struct {
 }
 
 const NO_SLICES = 10
+const QUALITY = 50
 
 func handleError(err error, info string) {
 	if err != nil {

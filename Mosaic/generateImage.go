@@ -66,6 +66,8 @@ func calculateImage(img image.Image, images []AverageImage) [][]int {
 	return indexes
 }
 
+// might be worth making this multithreaded using mutexes at some point
+// Take the image and the location and places each colour in the final image
 func setImage(img *image.RGBA, place image.Image, dim dimensions, y, x int){
 	for i := 0; i < place.Bounds().Max.Y; i++ {
 		for j := 0; j < place.Bounds().Max.X; j++ {
@@ -80,17 +82,17 @@ func createImage(indexes [][]int, images []AverageImage, dim dimensions, locatio
 
 	img := image.NewRGBA(image.Rectangle{upLeft, lowRight})
 
+	// takes each index and places the image within the final image
 	for i := 0; i < len(indexes); i++ {
 		for j:= 0; j < len(indexes[0]); j++ {
 			setImage(img, images[indexes[i][j]].image, dim, i, j)
 		}
 	}
 
+	// export the final image
 	f, _ := os.Create(location + ".jpg")
-	err := jpeg.Encode(f, img, &jpeg.Options{50})
-	if err != nil {
-		return
-	}
+	err := jpeg.Encode(f, img, &jpeg.Options{QUALITY})
+	handleError(err, "Error encoding final image")
 }
 
 func generateImages(img string, images []AverageImage, scaleX, scaleY int, imageShrink int, location string) {

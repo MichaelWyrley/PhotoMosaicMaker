@@ -51,7 +51,7 @@ You might need to make the directory that the images to be scraped will be store
 
 # Example uses
 
-Before
+Before (image from [Pixabay](https://www.pexels.com/@pixabay/))
 <img src="./frog.jpg"></img>
 
 After

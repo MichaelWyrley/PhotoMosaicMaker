@@ -36,7 +36,7 @@ func getAverageValues(img image.Image, r chan AverageImage) {
 	step := img.Bounds().Max.Y / NO_SLICES
 	var returns []chan ColourSum
 
-	// We move through the image in bands so this will create the bands
+	// Making the bands for the image
 	for i := img.Bounds().Min.Y; i <= img.Bounds().Max.Y; i += step {
 		ret := make(chan ColourSum)
 		go sumValues(img, img.Bounds().Min.X, i, img.Bounds().Max.X, i+step, ret)

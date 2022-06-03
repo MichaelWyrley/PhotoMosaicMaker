@@ -71,7 +71,7 @@ def download_image(path, urls, image_dimensions):
             # Open the image
             image_content = requests.get(url).content
             image_file = io.BytesIO(image_content)
-            image = Image.open(image_file)
+            image = Image.open(image_file).convert('RGB')
             image = image.resize(image_dimensions)
 
             # Save the image

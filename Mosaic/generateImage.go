@@ -1,10 +1,11 @@
 package main
 
 import (
+	"github.com/nfnt/resize"
 	"image"
 	"image/jpeg"
 	"os"
-	"github.com/nfnt/resize"
+	"sync"
 )
 
 func squareDifference(r1, r2, g1, g2, b1, b2 uint64) uint64 {
@@ -76,17 +77,40 @@ func setImage(img *image.RGBA, place image.Image, dim dimensions, y, x int){
 	}
 }
 
+// Places the images in slices (called as a goroutine)
+func slicedImage(img *image.RGBA, indexes [][]int, images []AverageImage, dim dimensions, startY, endY int, mutex *sync.Mutex, done chan bool) {
+	// takes each index and places the image within the final image
+	for i := startY; i < endY; i++ {
+		for j:= 0; j < len(indexes[0]); j++ {
+			mutex.Lock() // the mutexes are not really needed as the values won't overwrite each other but better safe than sorry
+			setImage(img, images[indexes[i][j]].image, dim, i, j)
+			mutex.Unlock()
+		}
+	}
+
+	done <- true
+
+}
+
 func createImage(indexes [][]int, images []AverageImage, dim dimensions, location string) {
 	upLeft := image.Point{0, 0}
 	lowRight := image.Point{dim.width, dim.height}
 
 	img := image.NewRGBA(image.Rectangle{upLeft, lowRight})
+	step := len(indexes) / NO_SLICES
+	mutex := &sync.Mutex{}
+	var returns []chan bool
 
-	// takes each index and places the image within the final image
-	for i := 0; i < len(indexes); i++ {
-		for j:= 0; j < len(indexes[0]); j++ {
-			setImage(img, images[indexes[i][j]].image, dim, i, j)
-		}
+	// Create the bands for the final image
+	for i := 0; i < len(indexes); i += step {
+		ret := make(chan bool)
+		// technically there would be a bit of cut off from the fact that the step might not match up with the length of the final image
+		// however this is such a small amount it doesn't really make a difference for the image
+		go slicedImage(img, indexes, images, dim, i, i+step, mutex, ret)
+		returns = append(returns, ret)
+	}
+	for _, e := range returns {
+		<-e
 	}
 
 	// export the final image
@@ -95,7 +119,7 @@ func createImage(indexes [][]int, images []AverageImage, dim dimensions, locatio
 	handleError(err, "Error encoding final image")
 }
 
-func generateImages(img string, images []AverageImage, scaleX, scaleY int, imageShrink int, location string) {
+func generateImages(img string, images []AverageImage, imageShrink int, location string) {
 	// read in the image
 	file, err := os.Open(img)
 	handleError(err, "Opening image")
@@ -108,10 +132,11 @@ func generateImages(img string, images []AverageImage, scaleX, scaleY int, image
 	imData = resize.Resize(uint(imData.Bounds().Max.X/imageShrink), uint(imData.Bounds().Max.Y/imageShrink), imData, resize.Lanczos3)
 
 	indexs := calculateImage(imData, images)
-	width := imData.Bounds().Max.X * scaleX
-	height := imData.Bounds().Max.Y * scaleY
+	// get the width and height of the final image
+	width := imData.Bounds().Max.X * images[0].image.Bounds().Max.X
+	height := imData.Bounds().Max.Y * images[0].image.Bounds().Max.Y
 
-	dim := dimensions{scaleX: scaleX, scaleY: scaleY, width: width, height: height}
+	dim := dimensions{scaleX: images[0].image.Bounds().Max.X, scaleY: images[0].image.Bounds().Max.Y, width: width, height: height}
 
 	createImage(indexs, images, dim, location)
 

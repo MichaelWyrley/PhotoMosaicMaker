@@ -41,6 +41,11 @@ def fetch_image_urls(query, number_of_images, wd, delay):
         
         print(f"Found: {number_results} search results. Extracting links from {results_start}:{number_results}")
         
+       # Click load more images if you run out of images
+        if previous_results == number_results:
+            print("No more images to take")
+            break
+
         #Loop through all the results that have been rechrieved (this is a slice so we don't repeat results when scrolling down a page)
         for img in thumbnail_results[results_start : number_results]:
             # Extract image thumbnail URLs

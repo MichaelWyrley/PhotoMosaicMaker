@@ -114,7 +114,7 @@ func createImage(indexes [][]int, images []AverageImage, dim dimensions, locatio
 	}
 
 	// export the final image
-	f, _ := os.Create(location + ".jpg")
+	f, _ := os.Create(location + "out.jpg")
 	err := jpeg.Encode(f, img, &jpeg.Options{QUALITY})
 	handleError(err, "Error encoding final image")
 }

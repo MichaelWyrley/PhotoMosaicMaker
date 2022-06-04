@@ -36,11 +36,11 @@ The image converter only works on .jpg or .jpeg images
 It uses go with a specific library installed for resizing the image ([library](https://github.com/nfnt/resize))
 use `go get github.com/nfnt/resize` if you don't have it installed
 
-To run the program use this format
-`go run . -img <IMAGE> -no <NO SAMPLE IMAGES>  -shrink <AMOUNT YOU WANT TO DECREASE BY> -location <LOCATION OF FINAL IMAGE>`
+Run the program via the .exe
+`./photoMosaic -img <IMAGE> -no <NO SAMPLE IMAGES>  -shrink <AMOUNT YOU WANT TO DECREASE BY> -location <LOCATION OF FINAL IMAGE>`
 
 e.g.
-`go run . -img '../cat1.jpeg' -no '10' -shrink 10 -location "../image"`
+`./photoMosaic -img '../cat1.jpeg' -no '10' -shrink 10 -location "../image"`
 
 
 ## Trouble Shooting

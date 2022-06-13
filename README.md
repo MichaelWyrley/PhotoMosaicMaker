@@ -37,10 +37,10 @@ It uses go with a specific library installed for resizing the image ([library](h
 use `go get github.com/nfnt/resize` if you don't have it installed
 
 Run the program via the .exe
-`./photoMosaic -img <IMAGE> -no <NO SAMPLE IMAGES>  -shrink <AMOUNT YOU WANT TO DECREASE BY> -location <LOCATION OF FINAL IMAGE>`
+`./photoMosaic -img <IMAGE> -no <NO SAMPLE IMAGES>  -shrink <AMOUNT YOU WANT TO DECREASE BY> -location <LOCATION OF FINAL IMAGE> -images <LOCATION OF SAMPLE IMAGES>`
 
 e.g.
-`./photoMosaic -img '../cat1.jpeg' -no '10' -shrink 10 -location "../image"`
+`./photoMosaic -img '../cat1.jpeg' -no '10' -shrink 10 -location "../image" -images "../images/"`
 
 
 ## Trouble Shooting

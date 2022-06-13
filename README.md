@@ -55,7 +55,7 @@ Before (image from [Pixabay](https://www.pexels.com/@pixabay/))
 <img src="./frog.jpg"></img>
 
 After
-<img src="./image.jpg"></img>
+<img src="./convertedFrog.jpg"></img>
 
 # Disclaimer
 
